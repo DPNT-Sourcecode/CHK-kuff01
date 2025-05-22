@@ -8,36 +8,28 @@ set -o pipefail
 SCRIPT_CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 CHALLENGE_ID=$1
-COVERAGE_TEST_REPORT_XML_FILE="${SCRIPT_CURRENT_DIR}/coverage.xml"
-PYTHON_CODE_COVERAGE_INFO="${SCRIPT_CURRENT_DIR}/coverage.tdl"
+NODEJS_TEST_REPORT_JSON_FILE="${SCRIPT_CURRENT_DIR}/coverage/coverage-summary.json"
+NODEJS_CODE_COVERAGE_INFO="${SCRIPT_CURRENT_DIR}/coverage.tdl"
 
-# Install dependencies
-pip install -r ${SCRIPT_CURRENT_DIR}/requirements.txt
+### Guard clause to check for invalid CHALLENGE_ID
 
-# Prepare Python project
-function init_python_modules_in() {
-    _target_dir=$1
-    for dir in `find ${SCRIPT_CURRENT_DIR}/${_target_dir} -type d`; do touch ${dir}/__init__.py; done
-}
-init_python_modules_in lib
-init_python_modules_in test
+if [[ ! -e "${SCRIPT_CURRENT_DIR}/lib/solutions/${CHALLENGE_ID}" ]]; then
+   echo "" > ${NODEJS_CODE_COVERAGE_INFO}
+   echo "The provided CHALLENGE_ID: '${CHALLENGE_ID}' isn't valid, aborting process..."
+   exit 1
+fi
 
-# Compute coverage
-( cd ${SCRIPT_CURRENT_DIR} && PYTHONPATH=lib coverage run --source "lib/solutions" -m pytest -s test || true 1>&2 )
-( cd ${SCRIPT_CURRENT_DIR} && coverage xml 1>&2 )
+( cd ${SCRIPT_CURRENT_DIR} && npm install && npm run coverage || true 1>&2 )
 
-[ -e ${PYTHON_CODE_COVERAGE_INFO} ] && rm ${PYTHON_CODE_COVERAGE_INFO}
+[ -e ${NODEJS_CODE_COVERAGE_INFO} ] && rm ${NODEJS_CODE_COVERAGE_INFO}
 
-# Extract coverage percentage for target challenge
-if [ -f "${COVERAGE_TEST_REPORT_XML_FILE}" ]; then
-    PERCENTAGE=$(( 0 ))
-    echo ${PERCENTAGE} > ${PYTHON_CODE_COVERAGE_INFO}
-    COVERAGE_OUTPUT=$(xmllint --xpath '//package[@name="lib.solutions.'${CHALLENGE_ID}'"]/@line-rate' ${COVERAGE_TEST_REPORT_XML_FILE})
-    if [[ ! -z "${COVERAGE_OUTPUT}" ]]; then
-        PERCENTAGE=$(echo ${COVERAGE_OUTPUT} | cut -d "\"" -f 2 | awk '{printf "%.0f",$1 * 100}' )
-    fi
-    echo ${PERCENTAGE} > ${PYTHON_CODE_COVERAGE_INFO}
-    cat ${PYTHON_CODE_COVERAGE_INFO}
+if [ -f "${NODEJS_TEST_REPORT_JSON_FILE}" ]; then
+    cat ${NODEJS_TEST_REPORT_JSON_FILE}  |\
+            jq "with_entries(select([.key] | contains([\"solutions/${CHALLENGE_ID}\"])))" |\
+            jq 'reduce to_entries[].value.statements as $item ({"total": 0, "covered": 0}; { "total": (.total + $item.total), "covered": (.covered + $item.covered) })' |\
+            jq 'if .total == 0 then 0 else .covered * 100 / .total end' |\
+            jq 'floor' |\
+            tee ${NODEJS_CODE_COVERAGE_INFO}
     exit 0
 else
     echo "No coverage report was found"

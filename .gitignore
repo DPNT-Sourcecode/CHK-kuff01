@@ -5,36 +5,14 @@
 
 # ~~~~~~~~~ Language specific ~~~~~~~~~
 
-# Optimised files
-__pycache__/
-*.so
-*.py[cod]
-*$py.class
+# Dependency directories
+node_modules/
 
-# Packaging
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-python-wheels/
-*.egg-info/
-*.egg
-MANIFEST
-
-# Virtualenv stuff
-env/
-venv/
-pyvenv/
-ENV/
-
-# Unit testing
-coverage.xml
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # ~~~~~~~~~ IDE specific ~~~~~~~~~
 
@@ -46,7 +24,6 @@ challenges/
 config/
 coverage/
 coverage.tdl
-.coverage
 jre/
 record/
 

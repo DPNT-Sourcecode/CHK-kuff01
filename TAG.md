@@ -1,14 +1,14 @@
 # How to update and release new client library
 
 Change library version is:
-- `requirements.txt`
+- `package.json`
 
 Runner version = Client version + Runner patch
 Example:
 ```
 client version = 0.24.0
 patch version = 0
-runner version = 0. 24.0.0
+runner version = 0.24.0.0
 ```
 
 Update the runner version (0.X.Y.Z) in:
