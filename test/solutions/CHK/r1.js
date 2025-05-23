@@ -56,4 +56,13 @@ describe("CHK challenge: getting total from skus string", function () {
   it("should return 40, when FFFFFF", function () {
     assert.equal(new CheckoutSolution().checkout("FFFFFF"), 40);
   });
+
+  it("should return 45, when STX", function () {
+    assert.equal(new CheckoutSolution().checkout("STX"), 45);
+  });
+  
+  it("should return 45, when XXX", function () {
+	  assert.equal(new CheckoutSolution().checkout("XXX"), 45);
+  })
 });
+
