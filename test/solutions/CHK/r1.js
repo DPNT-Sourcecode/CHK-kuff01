@@ -10,7 +10,7 @@ describe("CHK challenge: getting total from skus string", function () {
   });
 
   it("should return -1, when invalid product is in sku", function () {
-    assert.equal(new CheckoutSolution().checkout("Z"), -1);
+    assert.equal(new CheckoutSolution().checkout("a"), -1);
   });
 
   it("should return 130, when 3 A's", function () {
@@ -65,4 +65,5 @@ describe("CHK challenge: getting total from skus string", function () {
 	  assert.equal(new CheckoutSolution().checkout("XXX"), 45);
   })
 });
+
 
