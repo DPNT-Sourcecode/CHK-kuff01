@@ -70,7 +70,3 @@ describe("CHK challenge: getting total from skus string", function () {
     assert.equal(new CheckoutSolution().checkout("ZTXZZ"), 45 + 20 + 17);
   });
 });
-
-
-
-
