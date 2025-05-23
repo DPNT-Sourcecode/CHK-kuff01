@@ -44,9 +44,8 @@ describe("CHK challenge: getting total from skus string", function () {
   it("should return 20, when FFF, third F should be free", function () {
     assert.equal(new CheckoutSolution().checkout("FFF"), 20);
   });
-  
-  it("should return ")
+
+  it("should return 20, when FF", function () {
+    assert.equal(new CheckoutSolution().checkout("FF"), 20);
+  });
 });
-
-
-
