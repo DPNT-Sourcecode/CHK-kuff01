@@ -50,7 +50,10 @@ describe("CHK challenge: getting total from skus string", function () {
   });
 
   it("should retrun 30, when FFFF", function () {
-    assert.equals(new CheckoutSolution().checkout("FFFF"), 30);
+    assert.equal(new CheckoutSolution().checkout("FFFF"), 30);
   });
+  
+  it("should return ")
 });
+
 
